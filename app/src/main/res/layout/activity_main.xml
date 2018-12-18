@@ -5,7 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.activity.MainActivity"
+    tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -13,59 +14,46 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/dp_0">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            <include layout="@layout/common_toolbar" />
         </android.support.design.widget.AppBarLayout>
-        <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:id="@+id/swipe_refresh"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/recycler_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
-        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
         <FrameLayout
-            android:id="@+id/frame_content"
+            android:id="@+id/relative_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <com.ashokvarma.bottomnavigation.BottomNavigationBar
-            android:id="@+id/bottom_nav_bar"
+        <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/main_floating_action_btn"-->
+        <!--style="@style/style_float_btn"-->
+        <!--android:layout_marginEnd="@dimen/dp_16"-->
+        <!--android:layout_marginBottom="@dimen/dp_60"-->
+        <!--android:src="@mipmap/icon_up_arrow"-->
+        <!--app:layout_behavior="@string/scale_down_show_behavior" />-->
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
-
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|end"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginBottom="60dp"-->
-            <!--android:elevation="8dp"-->
-            <!--android:src="@drawable/ic_float_up" />-->
-
+            android:layout_gravity="bottom"
+            android:background="@color/colorCard"
+            app:elevation="@dimen/dp_16"
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:menu="@menu/bottom_navigation_main" />
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/drawer_item_bg_n"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
+        app:itemTextColor="@color/title_black"
         app:menu="@menu/nav_menu" />
 </android.support.v4.widget.DrawerLayout>
