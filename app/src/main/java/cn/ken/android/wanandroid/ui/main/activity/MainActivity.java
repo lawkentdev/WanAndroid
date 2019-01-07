@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,12 +48,74 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private WeChatFragment mWeChatFragment;
     private GuideFragment mGuideFragment;
     private ProjectFragment mProjectFragment;
+    private Bundle bundle;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.bundle = savedInstanceState;
         setContentView(R.layout.activity_main);
+        fragmentManager = getSupportFragmentManager();
         init();
+    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        if (outState != null) {
+//            FragmentTransaction transaction = fragmentManager.beginTransaction();
+//            if (mHomeFragment != null) {
+//                transaction.hide(mHomeFragment);
+//            }
+//            if (mHierarchyFragment != null) {
+//                transaction.hide(mHierarchyFragment);
+//            }
+//            if (mWeChatFragment != null) {
+//                transaction.hide(mWeChatFragment);
+//            }
+//            if (mGuideFragment != null) {
+//                transaction.hide(mGuideFragment);
+//            }
+//            if (mProjectFragment != null) {
+//                transaction.hide(mProjectFragment);
+//            }
+//            transaction.commit();
+//        }
+//        super.onSaveInstanceState(outState);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            //隐藏碎片 避免重叠
+//            FragmentTransaction transaction = fragmentManager.beginTransaction();
+//            if (mHomeFragment != null) {
+//                transaction.hide(mHomeFragment);
+//            }
+//            if (mHierarchyFragment != null) {
+//                transaction.hide(mHierarchyFragment);
+//            }
+//            if (mWeChatFragment != null) {
+//                transaction.hide(mWeChatFragment);
+//            }
+//            if (mGuideFragment != null) {
+//                transaction.hide(mGuideFragment);
+//            }
+//            if (mProjectFragment != null) {
+//                transaction.hide(mProjectFragment);
+//            }
+//            transaction.commit();
+//            setTabSelection(0);
+//        }
+//        super.onRestoreInstanceState(savedInstanceState);
+//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bundle != null) {
+            setTabSelection(0);
+        }
     }
 
     private void init() {
@@ -61,28 +125,28 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mUsTv = (TextView) findViewById(R.id.nav_header_user_tv);
         mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
         mToolbarTitle = (TextView) findViewById(R.id.common_toolbar_title_tv);
-        initFragment();
+//        initFragment();
         initToolbar();
         initDrawerToggle();
         initNavigationView();
         initBottomNavigationView();
         initDrawerLayout();
-        setDefaultFragment();
+        setTabSelection(0);
     }
 
-    private void initFragment() {
-        fragments = new ArrayList<>();
-        mHomeFragment = HomeFragment.newInstance();
-        mHierarchyFragment = HierarchyFragment.newInstance();
-        mWeChatFragment = WeChatFragment.newInstance();
-        mGuideFragment = GuideFragment.newInstance();
-        mProjectFragment = ProjectFragment.newInstance();
-        fragments.add(mHomeFragment);
-        fragments.add(mHierarchyFragment);
-        fragments.add(mWeChatFragment);
-        fragments.add(mGuideFragment);
-        fragments.add(mProjectFragment);
-    }
+//    private void initFragment() {
+//        fragments = new ArrayList<>();
+//        mHomeFragment = HomeFragment.newInstance();
+//        mHierarchyFragment = HierarchyFragment.newInstance();
+//        mWeChatFragment = WeChatFragment.newInstance();
+//        mGuideFragment = GuideFragment.newInstance();
+//        mProjectFragment = ProjectFragment.newInstance();
+//        fragments.add(mHomeFragment);
+//        fragments.add(mHierarchyFragment);
+//        fragments.add(mWeChatFragment);
+//        fragments.add(mGuideFragment);
+//        fragments.add(mProjectFragment);
+//    }
 
     private void initToolbar() {
         // 替换ActionBar
@@ -119,23 +183,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (menuItem.getItemId()) {
                     case R.id.tab_main_home:
                         mToolbarTitle.setText(getResources().getString(R.string.app_name));
-                        replaceFragment(fragments.get(0));
+                        setTabSelection(0);
                         break;
                     case R.id.tab_knowledge_hierarchy:
                         mToolbarTitle.setText(getResources().getString(R.string.bottom_nav_item_knowledge));
-                        replaceFragment(fragments.get(1));
+                        setTabSelection(1);
                         break;
                     case R.id.tab_wx_article:
                         mToolbarTitle.setText(getResources().getString(R.string.bottom_nav_item_wx));
-                        replaceFragment(fragments.get(2));
+                        setTabSelection(2);
                         break;
                     case R.id.tab_navigation:
                         mToolbarTitle.setText(getResources().getString(R.string.bottom_nav_item_guide));
-                        replaceFragment(fragments.get(3));
+                        setTabSelection(3);
                         break;
                     case R.id.tab_project:
                         mToolbarTitle.setText(getResources().getString(R.string.bottom_nav_item_project));
-                        replaceFragment(fragments.get(4));
+                        setTabSelection(4);
                         break;
                     default:
                         break;
@@ -145,14 +209,82 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
-    private void setDefaultFragment() {
+    private void setTabSelection(int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.relative_frame_layout, fragments.get(0)).commit();
+        //隐藏碎片
+        hideFragment(transaction);
+        switch (index) {
+            case 0:
+                //判断碎片是否为空 以免重复建立 影响性能
+                if (mHomeFragment == null) {
+                    mHomeFragment = HomeFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mHomeFragment);
+                    transaction.show(mHomeFragment);
+                } else {
+                    transaction.show(mHomeFragment);
+                }
+                break;
+            case 1:
+                //判断碎片是否为空 以免重复建立 影响性能
+                if (mHierarchyFragment == null) {
+                    mHierarchyFragment = HierarchyFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mHierarchyFragment);
+                    transaction.show(mHierarchyFragment);
+                } else {
+                    transaction.show(mHierarchyFragment);
+                }
+                break;
+            case 2:
+                //判断碎片是否为空 以免重复建立 影响性能
+                if (mWeChatFragment == null) {
+                    mWeChatFragment = WeChatFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mWeChatFragment);
+                    transaction.show(mWeChatFragment);
+                } else {
+                    transaction.show(mWeChatFragment);
+                }
+                break;
+            case 3:
+                //判断碎片是否为空 以免重复建立 影响性能
+                if (mGuideFragment == null) {
+                    mGuideFragment = GuideFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mGuideFragment);
+                    transaction.show(mGuideFragment);
+                } else {
+                    transaction.show(mGuideFragment);
+                }
+                break;
+            case 4:
+                //判断碎片是否为空 以免重复建立 影响性能
+                if (mProjectFragment == null) {
+                    mProjectFragment = ProjectFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mProjectFragment);
+                    transaction.show(mProjectFragment);
+                } else {
+                    transaction.show(mProjectFragment);
+                }
+                break;
+        }
+        transaction.commit();
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.relative_frame_layout, fragment).commit();
+    private void hideFragment(FragmentTransaction transaction) {
+        //隐藏碎片 避免重叠
+        if (mHomeFragment != null) {
+            transaction.hide(mHomeFragment);
+        }
+        if (mHierarchyFragment != null) {
+            transaction.hide(mHierarchyFragment);
+        }
+        if (mWeChatFragment != null) {
+            transaction.hide(mWeChatFragment);
+        }
+        if (mGuideFragment != null) {
+            transaction.hide(mGuideFragment);
+        }
+        if (mProjectFragment != null) {
+            transaction.hide(mProjectFragment);
+        }
     }
 
     private void initDrawerLayout() {

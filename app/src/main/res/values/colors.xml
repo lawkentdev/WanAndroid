@@ -9,6 +9,10 @@
     <color name="colorText">#2C2C2C</color>
     <color name="colorLogo">#FED530</color>
 
+
+    <color name="knewledge_text_title">#000000</color>
+    <color name="knewledge_text_children">#686868</color>
+
     <color name="fab_bg">#FF4081</color>
     <color name="drawer_item_bg_p">#e8e8e8</color>
     <color name="drawer_item_bg_n">#fffff9</color>
@@ -81,5 +85,6 @@
     <color name="indicator_color">#115E56</color>
     <color name="navigation_selected">#FF36BC9B</color>
     <color name="navigation_normal">#FF757575</color>
+    <color name="navigation_tab_bg">#E8E8E8</color>
 
 </resources>

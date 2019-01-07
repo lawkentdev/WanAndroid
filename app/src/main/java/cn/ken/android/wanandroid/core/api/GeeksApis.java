@@ -1,7 +1,5 @@
 package cn.ken.android.wanandroid.core.api;
 
-import android.database.Observable;
-
 import java.util.List;
 
 import cn.ken.android.wanandroid.core.bean.BaseResponse;
@@ -15,6 +13,7 @@ import cn.ken.android.wanandroid.core.bean.navigation.NavigationListData;
 import cn.ken.android.wanandroid.core.bean.project.ProjectClassifyData;
 import cn.ken.android.wanandroid.core.bean.project.ProjectListData;
 import cn.ken.android.wanandroid.core.bean.wx.WxAuthor;
+import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
