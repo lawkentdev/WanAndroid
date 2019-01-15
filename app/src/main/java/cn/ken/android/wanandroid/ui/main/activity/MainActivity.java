@@ -11,17 +11,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.ken.android.wanandroid.base.BaseActivity;
-import cn.ken.android.wanandroid.ui.guide.fragment.GuideFragment;
+import cn.ken.android.wanandroid.ui.navigation.fragment.NavigationFragment;
 import cn.ken.android.wanandroid.ui.hierarchy.fragment.HierarchyFragment;
 import cn.ken.android.wanandroid.ui.home.fragment.HomeFragment;
 import cn.ken.android.wanandroid.ui.project.fragment.ProjectFragment;
@@ -46,7 +44,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private HomeFragment mHomeFragment;
     private HierarchyFragment mHierarchyFragment;
     private WeChatFragment mWeChatFragment;
-    private GuideFragment mGuideFragment;
+    private NavigationFragment mNavigationFragment;
     private ProjectFragment mProjectFragment;
     private Bundle bundle;
     private FragmentManager fragmentManager;
@@ -113,18 +111,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        if (bundle != null) {
-            setTabSelection(0);
-        }
+//        if (bundle != null) {
+//            setTabSelection(0);
+//        }
     }
 
     private void init() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_common);
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mUsTv = (TextView) findViewById(R.id.nav_header_user_tv);
         mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
-        mToolbarTitle = (TextView) findViewById(R.id.common_toolbar_title_tv);
+        mToolbarTitle = (TextView) findViewById(R.id.toolbar_common_title_tv);
 //        initFragment();
         initToolbar();
         initDrawerToggle();
@@ -152,7 +150,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // 替换ActionBar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        setTitle("");
         mToolbarTitle.setText(getResources().getString(R.string.app_name));
     }
 
@@ -246,12 +245,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case 3:
                 //判断碎片是否为空 以免重复建立 影响性能
-                if (mGuideFragment == null) {
-                    mGuideFragment = GuideFragment.newInstance();
-                    transaction.add(R.id.relative_frame_layout, mGuideFragment);
-                    transaction.show(mGuideFragment);
+                if (mNavigationFragment == null) {
+                    mNavigationFragment = NavigationFragment.newInstance();
+                    transaction.add(R.id.relative_frame_layout, mNavigationFragment);
+                    transaction.show(mNavigationFragment);
                 } else {
-                    transaction.show(mGuideFragment);
+                    transaction.show(mNavigationFragment);
                 }
                 break;
             case 4:
@@ -279,8 +278,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (mWeChatFragment != null) {
             transaction.hide(mWeChatFragment);
         }
-        if (mGuideFragment != null) {
-            transaction.hide(mGuideFragment);
+        if (mNavigationFragment != null) {
+            transaction.hide(mNavigationFragment);
         }
         if (mProjectFragment != null) {
             transaction.hide(mProjectFragment);
@@ -356,7 +355,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_common, menu);
         return true;
     }
 

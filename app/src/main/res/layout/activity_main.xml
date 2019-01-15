@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             app:elevation="@dimen/dp_0">
 
-            <include layout="@layout/common_toolbar" />
+            <include layout="@layout/toolbar_common" />
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
@@ -43,6 +43,7 @@
             app:elevation="@dimen/dp_16"
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             app:menu="@menu/bottom_navigation_main" />
     </android.support.design.widget.CoordinatorLayout>
 

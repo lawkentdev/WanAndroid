@@ -8,13 +8,13 @@ import cn.ken.android.wanandroid.core.bean.main.collect.FeedArticleListData;
 import cn.ken.android.wanandroid.core.http.base.BaseCallback;
 import cn.ken.android.wanandroid.core.http.base.BaseView;
 
-public class Controller {
+public class HomeController {
     public interface Presenter {
         void getBannerData();
         void getArticleListData(int pageNum);
 //        void attachView(Controller.View view);
 //        void detachView();
-//        boolean isAttachView();
+//        boolean isActive();
     }
 
     public interface View extends BaseView<Presenter> {
@@ -23,7 +23,7 @@ public class Controller {
     }
 
     public interface Model {
-        void getBannerData(BaseCallback callback);
-        void getArticleListData(int pageNum, BaseCallback callback);
+        void getBannerData(BaseCallback<BaseResponse<List<BannerData>>> callback);
+        void getArticleListData(int pageNum, BaseCallback<BaseResponse<FeedArticleListData>> callback);
     }
 }

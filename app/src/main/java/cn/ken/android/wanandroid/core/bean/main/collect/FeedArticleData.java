@@ -1,6 +1,7 @@
 package cn.ken.android.wanandroid.core.bean.main.collect;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author quchao
@@ -28,6 +29,7 @@ public class FeedArticleData implements Serializable {
     private String title;
     private int visible;
     private int zan;
+    private List<Tag> tags;
 
     public String getApkLink() {
         return apkLink;
@@ -179,5 +181,13 @@ public class FeedArticleData implements Serializable {
 
     public void setZan(int zan) {
         this.zan = zan;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

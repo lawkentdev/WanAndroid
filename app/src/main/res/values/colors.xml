@@ -8,7 +8,8 @@
     <color name="colorCard">#FFFFFF</color>
     <color name="colorText">#2C2C2C</color>
     <color name="colorLogo">#FED530</color>
-
+    <color name="home_text_grey">#888888</color>
+    <color name="progress_bg">#129764</color>
 
     <color name="knewledge_text_title">#000000</color>
     <color name="knewledge_text_children">#686868</color>
@@ -30,7 +31,7 @@
     <color name="grey_search">#FF999999</color>
     <color name="colorPrimaryOverlay">#00abff</color>
     <color name="delete_text">#cccccc</color>
-    <color name="deep_grey">#e6e6e6</color>
+    <color name="deep_grey">#e1e1e1</color>
     <color name="dialog_background">#ffffff</color>
     <color name="yellow">#f39c12</color>
     <color name="search_grey_gone">#bbbbbb</color>
@@ -70,6 +71,7 @@
     <color name="light_white">#f4f0f0</color>
     <color name="black">#333333</color>
     <color name="title_black">#222222</color>
+    <color name="title_grey">#666666</color>
     <color name="common_black_bac">#2b2929</color>
     <color name="grey_divider">#E5E5E5</color>
     <color name="blue">#3F9FE0</color>
@@ -82,9 +84,30 @@
     <color name="message_stroke_line">#DDDDDD</color>
     <color name="tab_bac">#049486</color>
     <color name="light_tab_bac">#45c1b5</color>
-    <color name="indicator_color">#115E56</color>
+    <color name="indicator_color">#ff008c</color>
     <color name="navigation_selected">#FF36BC9B</color>
     <color name="navigation_normal">#FF757575</color>
-    <color name="navigation_tab_bg">#E8E8E8</color>
+    <color name="navigation_tab_bg">#F1F1F1</color>
+    <color name="navigation_flow_text_view_bg">#E8E8E8</color>
+    <color name="navigation_flow_text_view_c0">#aa7a1a</color>
+    <color name="navigation_flow_text_view_c1">#ba84a2</color>
+    <color name="navigation_flow_text_view_c2">#3370bc</color>
+    <color name="navigation_flow_text_view_c3">#1c1c1c</color>
+    <color name="navigation_flow_text_view_c4">#d11d77</color>
+    <color name="navigation_flow_text_view_c5">#44a16f</color>
+    <color name="navigation_flow_text_view_c6">#26d735</color>
+    <color name="navigation_flow_text_view_c7">#c9b782</color>
+    <color name="navigation_flow_text_view_c8">#b96300</color>
+    <color name="navigation_flow_text_view_c9">#81019e</color>
+    <color name="navigation_flow_text_view_c10">#d12c2a</color>
+    <color name="navigation_flow_text_view_c11">#757ce9</color>
+    <color name="navigation_flow_text_view_c12">#65e182</color>
+    <color name="navigation_flow_text_view_c13">#43b6dc</color>
+    <color name="navigation_flow_text_view_c14">#6f7c83</color>
+    <color name="navigation_flow_text_view_c15">#27c29c</color>
+    <color name="navigation_flow_text_view_c16">#8353cf</color>
+    <color name="navigation_flow_text_view_c17">#e449a3</color>
+    <color name="navigation_flow_text_view_c18">#9e6421</color>
+    <color name="navigation_flow_text_view_c19">#a45db4</color>
 
 </resources>

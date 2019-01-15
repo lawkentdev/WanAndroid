@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpUtils {
     public static final int DEFAULT_TIME_OUT = 8000;
+    public static GeeksApis geeksApis = HttpUtils.createRetrofit().create(GeeksApis.class);
 
     public static Retrofit createRetrofit() {
         // 创建Retrofit

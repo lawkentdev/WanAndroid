@@ -1,74 +1,55 @@
 package cn.ken.android.wanandroid.ui.home.fragment;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.ken.android.wanandroid.R;
-import cn.ken.android.wanandroid.core.api.GeeksApis;
 import cn.ken.android.wanandroid.core.bean.BaseResponse;
 import cn.ken.android.wanandroid.core.bean.main.banner.BannerData;
 import cn.ken.android.wanandroid.core.bean.main.collect.FeedArticleData;
 import cn.ken.android.wanandroid.core.bean.main.collect.FeedArticleListData;
-import cn.ken.android.wanandroid.core.http.home.Controller;
-import cn.ken.android.wanandroid.core.http.home.HomeDataPresenter;
+import cn.ken.android.wanandroid.core.http.home.HomePresenter;
+import cn.ken.android.wanandroid.core.http.home.HomeController;
 import cn.ken.android.wanandroid.ui.home.GlideImageLoader;
 import cn.ken.android.wanandroid.ui.home.adapter.HomeListAdapter;
-import cn.ken.android.wanandroid.utils.HttpUtils;
+import cn.ken.android.wanandroid.ui.main.activity.ReadArticleActivity;
 import cn.ken.android.wanandroid.utils.LogUtil;
 import cn.ken.android.wanandroid.utils.ToastUtils;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class HomeFragment extends Fragment implements Controller.View {
+public class HomeFragment extends Fragment implements HomeController.View {
 
     Banner banner;
-    List<String> bannerImages = new ArrayList<>();
-    List<String> bannerTitles = new ArrayList<>();
-    List<String> mHomeArticles;
+    List<BannerData> bannerDatas = new ArrayList<>();
+    List<FeedArticleData> mHomeArticles = new ArrayList<>();
     RecyclerView mRecyclerView;
     HomeListAdapter mMyAdapter;
+    RefreshLayout refreshLayout;
 
     private ProgressDialog dialog;
-    private Controller.Presenter presenter;
+    private HomeController.Presenter presenter;
     public int pageNum = 0;
-
-//    {
-//        bannerTitles.add("第一张图片");
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/50c115c2-cf6c-4802-aa7b-a4334de444cd.png");
-//        bannerTitles.add("第二张图片");
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/ab17e8f9-6b79-450b-8079-0f2287eb6f0f.png");
-//        bannerTitles.add("第三张图片");
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/fb0ea461-e00a-482b-814f-4faca5761427.png");
-//    }
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -85,13 +66,14 @@ public class HomeFragment extends Fragment implements Controller.View {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.home_frag_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-//        initData();
-        mHomeArticles = new ArrayList<String>();
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         mMyAdapter = new HomeListAdapter(mHomeArticles);
         mRecyclerView.setAdapter(mMyAdapter);
         //为RecyclerView添加HeaderView和FooterView
         setHeaderView(mRecyclerView);
 //        setFooterView(mRecyclerView);
+
+        initRefreshLayout(view);
 
         return view;
     }
@@ -103,8 +85,7 @@ public class HomeFragment extends Fragment implements Controller.View {
 //        presenter.attachView(this); // 绑定view引用
         dialog = new ProgressDialog(getActivity());
         dialog.setMessage("加载中...");
-        dialog.show();
-        presenter = new HomeDataPresenter(this);
+        presenter = new HomePresenter(this);
         presenter.getBannerData();
         presenter.getArticleListData(pageNum);
     }
@@ -117,6 +98,7 @@ public class HomeFragment extends Fragment implements Controller.View {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        showLoading();
     }
 
     @Override
@@ -151,13 +133,32 @@ public class HomeFragment extends Fragment implements Controller.View {
 //        presenter.detachView(); // 断开view引用
     }
 
+    private void initRefreshLayout(View view) {
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.home_frag_refresh_layout);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                bannerDatas.clear();
+                mHomeArticles.clear();
+                showLoading();
+                presenter.getBannerData();
+                presenter.getArticleListData(pageNum = 0);
+                refreshlayout.finishRefresh();
+//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                presenter.getArticleListData(pageNum++);
+                refreshlayout.getRefreshFooter();
+                refreshlayout.finishLoadMore();
+//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+            }
+        });
+    }
+
     private void setHeaderView(RecyclerView view) {
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/00f83f1d-3c50-439f-b705-54a49fc3d90d.jpg");
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/00f83f1d-3c50-439f-b705-54a49fc3d90d.jpg");
-//        bannerImages.add("http://www.wanandroid.com/blogimgs/00f83f1d-3c50-439f-b705-54a49fc3d90d.jpg");
-//        bannerTitles.add("JSON工具");
-//        bannerTitles.add("JSON工具");
-//        bannerTitles.add("JSON工具");
         View header = LayoutInflater.from(getContext()).inflate(R.layout.item_home_frag_header, view, false);
         // 初始化Banner
         banner = (Banner) header.findViewById(R.id.home_frag_item_banner);
@@ -179,45 +180,49 @@ public class HomeFragment extends Fragment implements Controller.View {
         banner.setIndicatorGravity(BannerConfig.CENTER);
         //banner设置方法全部调用完毕时最后调用
 //        banner.start();
+        // banner监听事件
+        banner.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                ReadArticleActivity.actionStart(getContext(), bannerDatas.get(position).getTitle(),
+                        bannerDatas.get(position).getUrl());
+            }
+        });
         mMyAdapter.setHeaderView(header);
     }
 
-//    private void setFooterView(RecyclerView view) {
-//        View footer = LayoutInflater.from(getContext()).inflate(R.layout.footer, view, false);
-//        mMyAdapter.setFooterView(footer);
-//    }
-
-    //初始化RecyclerView中每个item的数据
-//    private void initData() {
-//        mHomeArticles = new ArrayList<String>();
-//        for (int i = 0; i < 20; i++) {
-//            mHomeArticles.add("item" + i);
-//        }
-//    }
+    private void setFooterView(RecyclerView view) {
+        View footer = LayoutInflater.from(getContext()).inflate(R.layout.item_recycler_view_footer, view, false);
+        mMyAdapter.setFooterView(footer);
+    }
 
     @Override
     public void setBannerData(BaseResponse<List<BannerData>> listBaseResponse) {
-        for (BannerData bannerData : listBaseResponse.getData()) {
-            bannerTitles.add(bannerData.getTitle().toString());
-            bannerImages.add(bannerData.getImagePath().toString());
-            LogUtil.e("Frag", bannerData.getTitle());
-            LogUtil.e("Frag", bannerData.getImagePath());
+        bannerDatas.addAll(listBaseResponse.getData());
+        List<String> bannerImages = new ArrayList<>();
+        List<String> bannerTitles = new ArrayList<>();
+        for (BannerData bannerData : bannerDatas) {
+            bannerTitles.add(bannerData.getTitle());
+            bannerImages.add(bannerData.getImagePath());
         }
         banner.setImages(bannerImages);
         banner.setBannerTitles(bannerTitles);
         banner.start();
+        hideLoading();
     }
 
     @Override
     public void setArticleListData(BaseResponse<FeedArticleListData> feedArticleListDataBaseResponse) {
         for (FeedArticleData data : feedArticleListDataBaseResponse.getData().getDatas()) {
-            mHomeArticles.add(data.getAuthor());
+            mHomeArticles.add(data);
+//            LogUtil.e("tags", data.getTags().get(0).getName());
         }
-//        mMyAdapter.notifyDataSetChanged();
+        mMyAdapter.notifyDataSetChanged();
+        hideLoading();
     }
 
     @Override
-    public void setPresenter(Controller.Presenter presenter) {
+    public void setPresenter(HomeController.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -237,10 +242,5 @@ public class HomeFragment extends Fragment implements Controller.View {
     public void showError() {
         ToastUtils.showToast(getContext(), "未知错误...");
     }
-
-//    @Override
-//    public boolean isActive() {
-//        return isAdded();
-//    }
 
 }

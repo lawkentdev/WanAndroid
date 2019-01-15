@@ -7,14 +7,13 @@ import cn.ken.android.wanandroid.core.bean.main.banner.BannerData;
 import cn.ken.android.wanandroid.core.bean.main.collect.FeedArticleListData;
 import cn.ken.android.wanandroid.core.http.base.BaseCallback;
 
-public class HomeDataPresenter implements Controller.Presenter {
+public class HomePresenter implements HomeController.Presenter {
+    private HomeController.Model taskModel;
+    private HomeController.View taskView;
 
-    private Controller.Model taskModel;
-    private Controller.View taskView;
-
-    public HomeDataPresenter(Controller.View view) {
+    public HomePresenter(HomeController.View view) {
         this.taskView = view;
-        taskModel = HomeDataModel.newInstance();
+        taskModel = HomeModel.newInstance();
         view.setPresenter(this);
     }
 
@@ -24,14 +23,14 @@ public class HomeDataPresenter implements Controller.Presenter {
 
             @Override
             public void onSuccess(BaseResponse<List<BannerData>> data) {
-//                if (isAttachView()) {
+//                if (isActive()) {
                 taskView.setBannerData(data);
 //                }
             }
 
             @Override
             public void onError(String error) {
-//                if (isAttachView()) {
+//                if (isActive()) {
                 taskView.showError();
                 taskView.hideLoading();
 //                }
@@ -39,7 +38,7 @@ public class HomeDataPresenter implements Controller.Presenter {
 
             @Override
             public void onFinish() {
-//                if (isAttachView()) {
+//                if (isActive()) {
                 taskView.hideLoading();
 //                }
             }
@@ -78,7 +77,7 @@ public class HomeDataPresenter implements Controller.Presenter {
 //    }
 //
 //    @Override
-//    public boolean isAttachView() {
+//    public boolean isActive() {
 //        return this.taskView != null;
 //    }
 

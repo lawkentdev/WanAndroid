@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.main.activity.ReadArticleActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.hierarchy.activity.HierarchyChildrenActivity"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

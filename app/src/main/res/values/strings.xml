@@ -27,6 +27,8 @@
     <string name="bottom_nav_item_wx">公众号</string>
     <string name="bottom_nav_item_guide">导航</string>
     <string name="bottom_nav_item_project">项目</string>
+    <string name="recycler_view_footer">正在加载...</string>
+    <string name="load_article_error_text">加载失败...</string>
 
     //Login
     <string name="login_title">Login Password</string>

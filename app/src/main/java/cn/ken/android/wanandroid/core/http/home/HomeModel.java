@@ -1,50 +1,36 @@
 package cn.ken.android.wanandroid.core.http.home;
 
-import android.util.Log;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import cn.ken.android.wanandroid.app.Constants;
 import cn.ken.android.wanandroid.core.api.GeeksApis;
 import cn.ken.android.wanandroid.core.bean.BaseResponse;
 import cn.ken.android.wanandroid.core.bean.main.banner.BannerData;
 import cn.ken.android.wanandroid.core.bean.main.collect.FeedArticleListData;
-import cn.ken.android.wanandroid.core.http.HttpHelper;
 import cn.ken.android.wanandroid.core.http.base.BaseCallback;
 import cn.ken.android.wanandroid.utils.HttpUtils;
 import cn.ken.android.wanandroid.utils.LogUtil;
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class HomeDataModel implements Controller.Model {
+public class HomeModel implements HomeController.Model {
 
-    private static HomeDataModel INSTANCE = null;
-    private GeeksApis geeksApis = HttpUtils.createRetrofit().create(GeeksApis.class);
+    private static HomeModel INSTANCE = null;
+    private GeeksApis geeksApis = HttpUtils.geeksApis;
 
-    private HomeDataModel() {
+    private HomeModel() {
     }
 
-    public static HomeDataModel newInstance() {
+    public static HomeModel newInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new HomeDataModel();
+            INSTANCE = new HomeModel();
         }
         return INSTANCE;
     }
 
     @Override
-    public void getBannerData(final BaseCallback callback) {
+    public void getBannerData(final BaseCallback<BaseResponse<List<BannerData>>> callback) {
         geeksApis.getBannerData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +59,7 @@ public class HomeDataModel implements Controller.Model {
     }
 
     @Override
-    public void getArticleListData(int pageNum, final BaseCallback callback) {
+    public void getArticleListData(int pageNum, final BaseCallback<BaseResponse<FeedArticleListData>> callback) {
         geeksApis.getFeedArticleList(pageNum)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
